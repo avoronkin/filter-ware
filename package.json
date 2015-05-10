@@ -1,0 +1,34 @@
+{
+  "name": "filter-ware",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha --harmony-generators --require co-mocha --require gnode --reporter spec"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/avoronkin/filter-ware.git"
+  },
+  "keywords": [
+    "ware",
+    "middleware"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/avoronkin/filter-ware/issues"
+  },
+  "homepage": "https://github.com/avoronkin/filter-ware",
+  "devDependencies": {
+    "chai": "^2.3.0",
+    "mocha": "^2.2.4",
+    "sinon": "^1.14.1"
+  },
+  "dependencies": {
+    "wrap-fn": "^0.1.4"
+  }
+}
