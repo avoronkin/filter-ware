@@ -25,6 +25,8 @@
   "homepage": "https://github.com/avoronkin/filter-ware",
   "devDependencies": {
     "chai": "^2.3.0",
+    "co-mocha": "^1.1.0",
+    "gnode": "^0.1.1",
     "mocha": "^2.2.4",
     "sinon": "^1.14.1"
   },
