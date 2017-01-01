@@ -438,32 +438,6 @@ describe('ware', function() {
 
   });
 
-  describe('#before', function() {
-    it('should run before each middleware', function(done) {
-      var spy = sinon.spy();
-
-      ware()
-        .before(function(req, res, next) {
-          spy();
-          next();
-        })
-        .use(function(req, res, next) {
-          next();
-        })
-        .use(function(req, res, next) {
-          next();
-        })
-        .use(function(req, res, next) {
-          next();
-        })
-        .run({}, {}, function(err) {
-          assert(spy.callCount === 3);
-          done(err);
-        })
-    });
-
-  });
-
   describe('errorhandler middleware', function(done) {
     it('should handle errors via arity +1 functions', function(done) {
       ware().use(function(obj, next) {
