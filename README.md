@@ -15,7 +15,7 @@ var ware = require('filter-ware');
 
 var router = ware()
   .filter(function(filter, req, res) {
-    return !filter || filter.test(req.url);
+    return filter.test(req.url);
   })
   .use(function(req, res, next) {
     console.log('for all pattrens')
@@ -29,6 +29,9 @@ var router = ware()
     next();
   }, function(req, res, next) {
     console.log('pattern2 2')
+  })
+  .use(function(err, req, res, next) {
+    console.log('err', err)
   })
 
 router.run({
