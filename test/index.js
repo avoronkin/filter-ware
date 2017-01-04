@@ -429,10 +429,46 @@ describe('ware', function() {
           next();
         })
         .run({}, {}, function(err) {
-          assert(!spy1.called);
+          assert(spy1.called);
           assert(!spy2.called);
           assert(spy3.calledTwice);
           done(err);
+        })
+    })
+
+    it('should filter error middlewares that will be run', function(done) {
+      var spy1 = sinon.spy();
+      var spy2 = sinon.spy();
+      var spy3 = sinon.spy();
+
+      ware()
+        .filter(function(filter, req, res) {
+          return filter === 'pattern2';
+        })
+        .use('pattern2', function(req, res, next) {
+          next(new Error('Test error'));
+        })
+        .use(function(err, req, res, next) {
+            spy1();
+            next(err);
+        })
+        .use('pattern3', function(err, req, res, next) {
+            spy2();
+            next(err);
+        })
+        .use('pattern4', function(err, req, res, next) {
+            spy2();
+            next(err);
+        })
+        .use('pattern2', function(err, req, res, next) {
+            spy3();
+            next(err);
+        })
+        .run({}, {}, function(err) {
+          assert.equal(spy1.called, true);
+          assert.equal(spy2.called, false);
+          assert.equal(spy3.called, true);
+          done();
         })
     })
 
