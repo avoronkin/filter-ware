@@ -11,40 +11,40 @@ describe('ware', function() {
       assert(w.use(noop) == w);
     });
 
-    it('should add a middleware to fns', function() {
+    it('should add a middleware to layer', function() {
       var w = ware().use(noop);
-      assert(1 == w.fns.length);
+      assert(1 == w.layers[0].length);
     });
 
     it('should accept an array of middleware', function() {
       var w = ware().use([noop, noop]);
-      assert(2 == w.fns.length);
+      assert(2 == w.layers[0].length);
     });
 
     it('should accept a Ware instance', function() {
       var o = ware().use(noop).use(noop);
       var w = ware().use(o);
-      assert(2 == w.fns.length);
+      assert(2 == w.layers.length);
     });
 
-    it('should accept an array of Ware instances', function() {
+    it.skip('should accept an array of Ware instances', function() {
       var a = ware().use(noop).use(noop);
       var b = ware().use(noop).use(noop);
       var w = ware([a, b]);
-      assert(4 == w.fns.length);
+      assert(4 == w.layers[0].length);
     })
 
     it('should accept middleware on construct', function() {
       var w = ware(noop);
-      assert(1 == w.fns.length);
+      assert(1 == w.layers[0].length);
     });
 
     it('should accept optional filter argument', function() {
       var w = ware().use('filter', noop);
-      assert(w.fns.length === 1);
-      assert(typeof w.fns[0] === 'function');
-      assert(w.fns[0]._filter)
-      assert(w.fns[0]._filter === 'filter');
+      assert(w.layers.length === 1);
+      assert(typeof w.layers[0][0] === 'function');
+      assert(w.layers[0]._filter)
+      assert(w.layers[0]._filter === 'filter');
     });
 
 
@@ -59,6 +59,7 @@ describe('ware', function() {
             next(error);
           })
           .run(function(err) {
+              console.log('err', err)
             assert(err == error);
             done();
           });
@@ -472,19 +473,55 @@ describe('ware', function() {
         })
     })
 
+    it('should switch to next layer when called next("route")', function (done) {
+        var spy1 = sinon.spy();
+        var spy2 = sinon.spy();
+        var spy3 = sinon.spy();
+
+        ware()
+          .filter(function(filter, req, res) {
+            return filter === 'pattern2';
+          })
+          .use('pattern2', [function(req, res, next) {
+            spy1();
+            next('route');
+          }, function(req, res, next) {
+            spy1();
+            next()
+          }])
+          .use('pattern2', function(req, res, next) {
+            spy2();
+            next()
+          })
+          .use('pattern1', function(req, res, next) {
+            spy3();
+            next()
+          })
+          .run({}, {}, function(err) {
+            assert(spy1.calledOnce);
+            assert(spy2.calledOnce);
+            assert(!spy3.called);
+            done(err);
+          })
+    })
+
   });
 
   describe('errorhandler middleware', function(done) {
     it('should handle errors via arity +1 functions', function(done) {
-      ware().use(function(obj, next) {
+      ware()
+      .use(function(obj, next) {
         next(new Error('foobar'));
-      }).use(function(obj, next) {
+      })
+      .use(function(obj, next) {
         obj.order += '0';
         next();
-      }).use(function(err, obj, next) {
+      })
+      .use(function(err, obj, next) {
         obj.order += 'a';
         next(err);
-      }).run({
+      })
+      .run({
         order: ''
       }, function(err, obj) {
         assert(err);
