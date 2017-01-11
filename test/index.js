@@ -505,6 +505,38 @@ describe('ware', function() {
           })
     })
 
+    it('should support list of middlewares', function (done) {
+        var spy1 = sinon.spy();
+        var spy2 = sinon.spy();
+        var spy3 = sinon.spy();
+
+        ware()
+          .filter(function(filter, req, res) {
+            return filter === 'pattern2';
+          })
+          .use(function(req, res, next) {
+            spy1();
+            next()
+          }, function(req, res, next) {
+            spy1();
+            next()
+          })
+          .use('pattern2', function(req, res, next) {
+            spy2();
+            next()
+          })
+          .use('pattern1', function(req, res, next) {
+            spy3();
+            next()
+          })
+          .run({}, {}, function(err) {
+            assert(spy1.calledTwice);
+            assert(spy2.calledOnce);
+            assert(!spy3.called);
+            done(err);
+          })
+    })
+
   });
 
   describe('errorhandler middleware', function(done) {
