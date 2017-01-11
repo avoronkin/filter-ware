@@ -26,9 +26,13 @@ var router = ware()
   })
   .use(/pattern2/, function(req, res, next) {
     console.log('pattern2 1')
-    next();
+    next('route');
   }, function(req, res, next) {
     console.log('pattern2 2')
+  })
+  .use(/pattern2/, function(req, res, next) {
+    console.log('pattern2 3')
+    next();
   })
   .use(function(err, req, res, next) {
     console.log('err', err)
