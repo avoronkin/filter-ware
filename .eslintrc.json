@@ -34,6 +34,7 @@
         "generator-star-spacing": [
             "error",
             "after"
-        ]
+        ],
+        "require-yield": "off"
     }
 }

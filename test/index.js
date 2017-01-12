@@ -22,14 +22,21 @@ describe('ware', function () {
         })
 
         it('should accept a Ware instance', function () {
-            var o = ware().use(noop).use(noop)
+            var o = ware()
+                    .use(noop)
+                    .use(noop)
+
             var w = ware().use(o)
             assert.equal(w.layers.length, 2)
         })
 
         it.skip('should accept an array of Ware instances', function () {
-            var a = ware().use(noop).use(noop)
-            var b = ware().use(noop).use(noop)
+            var a = ware()
+                    .use(noop)
+                    .use(noop)
+            var b = ware()
+                    .use(noop)
+                    .use(noop)
             var w = ware([a, b])
             assert.equal(w.layers[0].length, 4)
         })
@@ -589,10 +596,10 @@ describe('ware', function () {
                     assert.equal(obj.order, 'a')
                     done()
                 })
-
         })
 
         it('should handle throwing inside error handlers', function (done) {
+            /* eslint-disable no-unused-vars */
             ware()
                 .use(function () {
                     throw new Error('boom!')
@@ -609,10 +616,11 @@ describe('ware', function () {
                     assert.equal(obj.message, 'oops')
                     done()
                 })
-
+            /* eslint-enable no-unused-vars */
         })
 
         it('should handle single error handler', function (done) {
+            /* eslint-disable no-unused-vars */
             ware()
                 .use(function (err, obj, next) {
                     // this should not execute
@@ -621,6 +629,7 @@ describe('ware', function () {
                 .run({}, function () {
                     done()
                 })
+            /* eslint-enable no-unused-vars */
         })
 
     })
